@@ -158,6 +158,10 @@ spec:
 {{ include "confluent-operator.config-file-provider" . | indent 10 }}
 {{- $_ := set $ "kafkaDependency" .Values.dependencies.kafka }}
 {{ include "confluent-operator.kafka-client-security" . | indent 10 }}
+    {{- if not (empty $.Values.hostAliases) }}
+    host_aliases:
+{{ toYaml .Values.hostAliases | trim | indent 4 }}
+    {{- end }}
     pod_annotations:
     {{- include "confluent-operator.annotations" . | indent 6 }}
     {{- include "confluent-operator.psc-init-container" . | indent 4 }}
@@ -184,7 +188,7 @@ spec:
           port: 9083
         initial_delay_seconds: 10
         timeout_seconds: 10
-{{- if .Values.global.pod }}      
+{{- if .Values.global.pod }}
 {{ include "confluent-operator.psc-pod-security-config" . | trim | indent 4 }}
 {{- end }}
     network:
@@ -206,7 +210,7 @@ spec:
       proxy:
         {{- if eq $.Values.loadBalancer.type "internal" }}
         internal: true
-        {{- end }} 
+        {{- end }}
         {{- if $.Values.loadBalancer.annotations }}
         annotations:
 {{ toYaml .Values.loadBalancer.annotations | trim | indent 10 }}
