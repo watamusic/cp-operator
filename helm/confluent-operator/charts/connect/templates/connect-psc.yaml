@@ -158,12 +158,12 @@ spec:
 {{ include "confluent-operator.config-file-provider" . | indent 10 }}
 {{- $_ := set $ "kafkaDependency" .Values.dependencies.kafka }}
 {{ include "confluent-operator.kafka-client-security" . | indent 10 }}
-    {{- if not (empty $.Values.hostAliases) }}
+    pod_annotations:
+    {{- include "confluent-operator.annotations" . | indent 6 }}
+    {{- if .Values.hostAliases }}
     host_aliases:
 {{ toYaml .Values.hostAliases | trim | indent 4 }}
     {{- end }}
-    pod_annotations:
-    {{- include "confluent-operator.annotations" . | indent 6 }}
     {{- include "confluent-operator.psc-init-container" . | indent 4 }}
     container:
       image: {{ $.Values.image.repository -}}:{{- $.Values.image.tag }}
