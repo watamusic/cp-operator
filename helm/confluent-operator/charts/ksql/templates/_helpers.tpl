@@ -12,6 +12,9 @@ bootstrap.servers={{ printf "%s:9073" $endpoint }}
 bootstrap.servers={{ .Values.dependencies.kafka.brokerEndpoints }}
 {{- include "confluent-operator.kafka-client-security" . }}
 {{- end }}
+{{- if .Values.configOverrides }}
+{{ toYaml .Values.configOverrides | trim }}
+{{- end }}
 {{- end }}
 
 {{/*
@@ -23,13 +26,13 @@ Monitoring Interceptor Configurations
 {{- if empty .Values.dependencies.interceptor.bootstrapEndpoint }}
 {{ printf "confluent.monitoring.interceptor.bootstrap.servers=%s" .Values.dependencies.kafka.bootstrapEndpoint }}
 {{- $_ := set $ "kafkaDependency" .Values.dependencies.kafka }}
-{{- else }} 
+{{- else }}
 {{ printf "confluent.monitoring.interceptor.bootstrap.servers=%s" .Values.dependencies.interceptor.bootstrapEndpoint }}
 {{- $_ := set $ "kafkaDependency" .Values.dependencies.interceptor }}
 {{- end }}
 {{- range $key, $val := splitList "\n" (include "confluent-operator.kafka-client-security" .)  }}
 {{- if not (empty $val) }}
-{{ printf "confluent.monitoring.interceptor.%s" $val }} 
+{{ printf "confluent.monitoring.interceptor.%s" $val }}
 {{- end }}
 {{- end }}
 {{- end }}
