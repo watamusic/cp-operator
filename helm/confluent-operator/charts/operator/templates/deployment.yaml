@@ -40,6 +40,10 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | trim | indent 6 }}
       {{- end }}
+      {{- if not (empty $.Values.hostAliases) }}
+      hostAliases:
+{{ toYaml .Values.hostAliases | trim | indent 6 }}
+      {{- end }}
       containers:
       - args:
         - controller
